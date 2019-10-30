@@ -22,40 +22,40 @@ const Article = mongoose.model('Article', {
   content: String,
 });
 
-app.get('/articles', async (req, res) => {
-  try {
-    const data = await Article.find();
-    res.send(data);
-  }
-  catch(error) {
-    res.send(error);
-  }
-});
-
-app.post('/articles', async (req, res) => {
-  try {
+app.route('/articles')
+  .get((req, res) => {
+    Article.find((err, data) => {
+      if(!err) {
+        res.send(data);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .post((req, res) => {
     const newArticle = new Article({
       title: req.body.title,
       content: req.body.content,
     });
-    const data = await newArticle.save();
-    res.send(data);
-  }
-  catch(error) {
-    res.send(error);
-  }
-});
 
-app.delete('/articles', (req, res) => {
-  Article.deleteMany((err) => {
-    if(!err) {
-      res.send('Successfully deleted all articles.');
-    }
-    else {
-      res.send(err);
-    }
+    newArticle.save(err => {
+      if(!err) {
+        res.send('Successfully added a new article');
+      } else {
+        res.send(err);
+      }
+    });
   })
-});
+  .delete((req, res) => {
+    Article.deleteMany((err) => {
+      if(!err) {
+        res.send('Successfully deleted all articles.');
+      }
+      else {
+        res.send(err);
+      }
+    })
+  });
 
 
 app.listen(3000, function () {
