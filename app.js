@@ -17,6 +17,22 @@ mongoose.connect('mongodb://localhost:27017/wikiDB', {
   useUnifiedTopology: true,
 });
 
+const Article = mongoose.model('Article', {
+  title: String,
+  content: String,
+});
+
+app.get('/articles', async (req, res) => {
+  try {
+    const data = await Article.find();
+    res.send(data);
+  }
+  catch(error) {
+    res.send(error);
+  }
+});
+
+
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
